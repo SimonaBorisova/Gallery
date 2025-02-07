@@ -6,24 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gallery.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "ArtTechniques",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ArtTechniques", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -69,40 +56,15 @@ namespace Gallery.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BirthYear = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeathYear = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nationality = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NationalityId = table.Column<byte>(type: "tinyint", nullable: false),
                     PortraitUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Authors", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Genres",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Genres", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Styles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Styles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,24 +177,16 @@ namespace Gallery.Migrations
                 name: "AuthorGenres",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
-                    GenreId = table.Column<int>(type: "int", nullable: false)
+                    GenreId = table.Column<byte>(type: "tinyint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AuthorGenres", x => x.Id);
+                    table.PrimaryKey("PK_AuthorGenres", x => new { x.AuthorId, x.GenreId });
                     table.ForeignKey(
                         name: "FK_AuthorGenres_Authors_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "Authors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AuthorGenres_Genres_GenreId",
-                        column: x => x.GenreId,
-                        principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -246,43 +200,19 @@ namespace Gallery.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
                     ReleaseYear = table.Column<int>(type: "int", nullable: false),
-                    GenreId = table.Column<int>(type: "int", nullable: false),
-                    StyleId = table.Column<int>(type: "int", nullable: false),
-                    ArtTechniqueId = table.Column<int>(type: "int", nullable: false),
+                    GenreId = table.Column<byte>(type: "tinyint", nullable: false),
+                    StyleId = table.Column<byte>(type: "tinyint", nullable: false),
+                    ArtTechniqueId = table.Column<byte>(type: "tinyint", nullable: false),
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HallNum = table.Column<int>(type: "int", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    HallNumber = table.Column<string>(type: "char(4)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Paintings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Paintings_ArtTechniques_ArtTechniqueId",
-                        column: x => x.ArtTechniqueId,
-                        principalTable: "ArtTechniques",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Paintings_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Paintings_Authors_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "Authors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Paintings_Genres_GenreId",
-                        column: x => x.GenreId,
-                        principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Paintings_Styles_StyleId",
-                        column: x => x.StyleId,
-                        principalTable: "Styles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -327,39 +257,9 @@ namespace Gallery.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AuthorGenres_AuthorId",
-                table: "AuthorGenres",
-                column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AuthorGenres_GenreId",
-                table: "AuthorGenres",
-                column: "GenreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Paintings_ApplicationUserId",
-                table: "Paintings",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Paintings_ArtTechniqueId",
-                table: "Paintings",
-                column: "ArtTechniqueId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Paintings_AuthorId",
                 table: "Paintings",
                 column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Paintings_GenreId",
-                table: "Paintings",
-                column: "GenreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Paintings_StyleId",
-                table: "Paintings",
-                column: "StyleId");
         }
 
         /// <inheritdoc />
@@ -390,19 +290,10 @@ namespace Gallery.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "ArtTechniques");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Authors");
-
-            migrationBuilder.DropTable(
-                name: "Genres");
-
-            migrationBuilder.DropTable(
-                name: "Styles");
         }
     }
 }

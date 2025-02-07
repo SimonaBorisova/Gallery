@@ -1,4 +1,4 @@
-﻿@model Gallery.Models.Painting
+﻿@model Painting
 
 @{
     ViewData["Title"] = "Edit";
@@ -49,9 +49,9 @@
                 <span asp-validation-for="PictureUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HallNum" class="control-label"></label>
-                <select asp-for="HallNum" class="form-control"></select>
-                <span asp-validation-for="HallNum" class="text-danger"></span>
+                <label asp-for="HallNumber" class="control-label"></label>
+                <select asp-for="HallNumber" class="form-control"></select>
+                <span asp-validation-for="HallNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Gallery.Data;
 using Gallery.Models;
+using Gallery.Models.ViewModels;
 
 namespace Gallery.Controllers
 {
@@ -19,13 +15,22 @@ namespace Gallery.Controllers
             _context = context;
         }
 
-        // GET: Authors
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string searched)
         {
-            return View(await _context.Authors.ToListAsync());
+            IQueryable<Author> authors = _context.Authors
+                 .AsNoTracking();
+
+            ViewBag.Searched = searched;
+
+            if (!string.IsNullOrEmpty(searched))
+            {
+                authors = authors
+                    .Where(Painting => Painting.Name.Contains(searched));
+            }
+
+            return View(authors);
         }
 
-        // GET: Authors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,29 +48,44 @@ namespace Gallery.Controllers
             return View(author);
         }
 
-        // GET: Authors/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Authors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BirthYear,DeathYear,Nationality,PortraitUrl")] Author author)
+        public async Task<IActionResult> Create( AuthorViewModel authorsViewModel)
         {
+
             if (ModelState.IsValid)
             {
-                _context.Add(author);
+                Author author = new Author()
+                {
+                    Name = authorsViewModel.Name,
+                    BirthYear = authorsViewModel.BirthYear,
+                    DeathYear = authorsViewModel.DeathYear,
+
+                };
+                string imagePath = "";
+                using (var memoryStream = new MemoryStream())
+                {
+                    authorsViewModel.Portrait.CopyTo(memoryStream);
+
+                    imagePath = $"wwwroot/images/authorsPortraits/{authorsViewModel.Name.ToString()}/{authorsViewModel.Name}.png";
+                    Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
+                    FileStream fileStream = new FileStream(imagePath, FileMode.Create);
+                    authorsViewModel.Portrait.CopyTo(fileStream);
+                }
+                author.PortraitUrl = imagePath;
+
+                _context.Authors.Add(author);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(author);
+            return View(authorsViewModel);
         }
 
-        // GET: Authors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,9 +101,6 @@ namespace Gallery.Controllers
             return View(author);
         }
 
-        // POST: Authors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,BirthYear,DeathYear,Nationality,PortraitUrl")] Author author)
@@ -116,7 +133,6 @@ namespace Gallery.Controllers
             return View(author);
         }
 
-        // GET: Authors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,7 +150,6 @@ namespace Gallery.Controllers
             return View(author);
         }
 
-        // POST: Authors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

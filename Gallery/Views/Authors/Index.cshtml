@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Gallery.Models.Author>
+﻿@model IQueryable<Author>
 
 @{
     ViewData["Title"] = "Index";
@@ -6,48 +6,61 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<form asp-action="Index" method="get">
+    <input type="search" name="searched" placeholder="Потърси картина" />
+    <button type="submit" class="btn btn-dark">
+        Търси&nbsp;
+        <i class="fas fa-search"></i>
+    </button>
+</form>
+
+@if (User.IsInRole("Employee"))
+{
+    <p>
+        <a asp-action="Create">Добави нов</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.BirthYear)
+                Година на раждане
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DeathYear)
+                Година на смъртта
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nationality)
+                Националност
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PortraitUrl)
+                Портрет
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.BirthYear)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeathYear)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nationality)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PortraitUrl)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (Author author in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => author.BirthYear)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => author.DeathYear)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => author.NationalityId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => author.PortraitUrl)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@author.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@author.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@author.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

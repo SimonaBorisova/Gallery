@@ -5,33 +5,31 @@ namespace Gallery.Data.Seeds
 {
     public static class SeedUsers
     {
-       
-        public static async Task SeedEmployeesAsync(UserManager<ApplicationUser> userManager)
+
+        public static async Task SeedEmployeesAsync(UserManager<IdentityUser> userManager)
         {
-            ApplicationUser employee1 = new()
+            IdentityUser employee1 = new()
             {
                 UserName = "moni",
                 Email = "moni@gmail.com",
                 EmailConfirmed = true,
-
             };
-            ApplicationUser employee2 = new()
+
+            IdentityUser employee2 = new()
             {
                 UserName = "deni",
                 Email = "deni@gmail.com",
                 EmailConfirmed = true,
-
             };
-            ApplicationUser employee3 = new()
+
+            IdentityUser employee3 = new()
             {
                 UserName = "eni",
                 Email = "eni@gmail.com",
                 EmailConfirmed = true,
-
             };
 
-
-            ApplicationUser alreadyExists = await userManager.FindByEmailAsync(employee1.Email);
+            IdentityUser alreadyExists = await userManager.FindByEmailAsync(employee1.Email);
 
             if (alreadyExists == null)
             {

@@ -1,4 +1,4 @@
-﻿@model Gallery.Models.Author
+﻿@model Author
 
 @{
     ViewData["Title"] = "Delete";
@@ -24,10 +24,10 @@
             @Html.DisplayFor(model => model.DeathYear)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nationality)
+            @Html.DisplayNameFor(model => model.NationalityId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nationality)
+             @Html.DisplayFor(model => model.NationalityId)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PortraitUrl)

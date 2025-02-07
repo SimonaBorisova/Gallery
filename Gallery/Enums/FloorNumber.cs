@@ -1,6 +1,6 @@
-﻿namespace Gallery.Models
+﻿namespace Gallery.Enums
 {
-    public enum HallNum
+    public enum FloorNumber : byte
     {
         FS = 1,
         SC = 2,

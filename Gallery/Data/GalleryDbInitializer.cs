@@ -11,14 +11,17 @@ namespace Gallery.Data
             using (IServiceScope service = app.ApplicationServices.CreateScope())
             {
                 IServiceProvider provider = service.ServiceProvider;
+
                 RoleManager<IdentityRole> roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
-                UserManager<ApplicationUser> userManager = provider
-                    .GetRequiredService<UserManager<ApplicationUser>>();
+
+                UserManager<IdentityUser> userManager = provider
+                    .GetRequiredService<UserManager<IdentityUser>>();
+
+                ApplicationDbContext contextArtTechniques = provider.GetRequiredService<ApplicationDbContext>();
 
                 await SeedRoles.SeedRolesAsync(roleManager);
                 await SeedUsers.SeedEmployeesAsync(userManager);
             }
-
         }
     }
 }

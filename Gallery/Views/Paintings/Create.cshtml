@@ -1,16 +1,16 @@
-﻿@model Gallery.Models.Painting
+﻿@model PaintingViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Създай";
 }
 
-<h1>Create</h1>
+<h1>Създай</h1>
 
-<h4>Painting</h4>
+<h4>Картина</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -18,47 +18,62 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AuthorId" class="control-label"></label>
-                <select asp-for="AuthorId" class ="form-control" asp-items="ViewBag.AuthorId"></select>
+                <label asp-for="SelectedAuthor" class="control-label"></label>
+                <select asp-for="SelectedAuthor" asp-items="Model.Authors" class="form-select">
+                    <option value="0">Изберете автор</option>
+                </select>
+                <span asp-validation-for="SelectedAuthor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ReleaseYear" class="control-label"></label>
-                <input asp-for="ReleaseYear" class="form-control" />
+                <input type="number" asp-for="ReleaseYear" min="1400" max="2025" value="2000" class="form-control" />
                 <span asp-validation-for="ReleaseYear" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="GenreId" class="control-label"></label>
-                <select asp-for="GenreId" class ="form-control" asp-items="ViewBag.GenreId"></select>
+                <label asp-for="SelectedGenre" class="control-label"></label>
+                <select asp-for="SelectedGenre" asp-items="Model.Genres" class="form-select">
+                    <option value="0">Изберете жанр</option>
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="StyleId" class="control-label"></label>
-                <select asp-for="StyleId" class ="form-control" asp-items="ViewBag.StyleId"></select>
+                <label asp-for="SelectedStyle" class="control-label"></label>
+                <select asp-for="SelectedStyle" asp-items="Model.Styles" class="form-select">
+                    <option value="0">Изберете стил</option>
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="ArtTechniqueId" class="control-label"></label>
-                <select asp-for="ArtTechniqueId" class ="form-control" asp-items="ViewBag.ArtTechniqueId"></select>
+                <label asp-for="SelectedArtTechnique" class="control-label"></label>
+                <select asp-for="SelectedArtTechnique" asp-items="Model.ArtTechniques" class="form-select">
+                    <option value="0">Изберете техника</option>
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="PictureUrl" class="control-label"></label>
-                <input asp-for="PictureUrl" class="form-control" />
-                <span asp-validation-for="PictureUrl" class="text-danger"></span>
+                <label asp-for="Picture" class="control-label"></label>
+                <input asp-for="Picture" type="file" class="form-control" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <div class="input-group my-3">
+                <label asp-for="SelectedFloorNumber" class="input-group-text"></label>
+                <select asp-for="SelectedFloorNumber" asp-items="Model.FloorNumbers" class="form-select">
+                    <option value="0">Изберете етаж</option>
+                </select>
+                <label asp-for="HallNumber" class="input-group-text"></label>
+                <input type="number" asp-for="HallNumber" min="1" max="99" value="1" placeholder="##" class="form-control" />
+                <span asp-validation-for="SelectedFloorNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HallNum" class="control-label"></label>
-                <select asp-for="HallNum" class="form-control"></select>
-                <span asp-validation-for="HallNum" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Създай" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

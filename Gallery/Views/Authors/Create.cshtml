@@ -1,48 +1,59 @@
-﻿@model Gallery.Models.Author
+﻿@using Gallery.Enums
+
+@model Gallery.Models.ViewModels.AuthorViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Създай</h1>
 
-<h4>Author</h4>
+<h4>Художник</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="BirthYear" class="control-label"></label>
                 <input asp-for="BirthYear" class="form-control" />
                 <span asp-validation-for="BirthYear" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="DeathYear" class="control-label"></label>
                 <input asp-for="DeathYear" class="form-control" />
                 <span asp-validation-for="DeathYear" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Nationality" class="control-label"></label>
-                <input asp-for="Nationality" class="form-control" />
+                <select asp-for="Nationality" class="form-control" asp-items="@(new SelectList(Enum.GetValues(typeof(Nationality)), "Nationality"))">
+                    <option value="">Select Nationality</option>
+                </select>
                 <span asp-validation-for="Nationality" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="PortraitUrl" class="control-label"></label>
-                <input asp-for="PortraitUrl" class="form-control" />
-                <span asp-validation-for="PortraitUrl" class="text-danger"></span>
+                <label asp-for="Portrait" class="control-label">Portrait</label>
+                <input type="file" asp-for="Portrait" class="form-control" />
+                <span asp-validation-for="Portrait" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Създай" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,17 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Gallery.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gallery.Models
 {
+    [PrimaryKey(nameof(AuthorId), nameof(GenreId))]
     public class AuthorGenre
     {
-        public int Id { get; set; }
         public int AuthorId { get; set; }
 
-        [ForeignKey(nameof(AuthorId))]
         public Author Author { get; set; }
-        public int GenreId { get; set; }
 
-        [ForeignKey(nameof(GenreId))] 
-        public Genre Genre { get; set; }
+        public Genre GenreId { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using Gallery.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gallery.Controllers

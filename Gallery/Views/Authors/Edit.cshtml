@@ -1,4 +1,4 @@
-﻿@model Gallery.Models.Author
+﻿@model Author
 
 @{
     ViewData["Title"] = "Edit";
@@ -24,9 +24,9 @@
                 <span asp-validation-for="DeathYear" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Nationality" class="control-label"></label>
-                <input asp-for="Nationality" class="form-control" />
-                <span asp-validation-for="Nationality" class="text-danger"></span>
+                 <label asp-for="NationalityId" class="control-label"></label>
+                <input asp-for="NationalityId" class="form-control" />
+                <span asp-validation-for="NationalityId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PortraitUrl" class="control-label"></label>
