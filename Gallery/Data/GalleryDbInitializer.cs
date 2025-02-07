@@ -1,25 +1,24 @@
-﻿using Gallery.Models;
+﻿using Gallery.Data.Seeds;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace Gallery.Data
 {
     public class GalleryDbInitializer
     {
-        public static async void Seed(IApplicationBuilder applicationBuilder)
+        public static async Task Initialise(IApplicationBuilder app)
         {
-            using (var scope = applicationBuilder.ApplicationServices.CreateScope())
+            using (IServiceScope service = app.ApplicationServices.CreateScope())
             {
-                var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-                await CreateRoles(roleManager);
+                IServiceProvider provider = service.ServiceProvider;
+                RoleManager<IdentityRole> roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+                UserManager<ApplicationUser> userManager = provider
+                    .GetRequiredService<UserManager<ApplicationUser>>();
+
+                await SeedRoles.SeedRolesAsync(roleManager);
+                await SeedUsers.SeedEmployeesAsync(userManager);
             }
-        }
-        public static async Task CreateRoles(RoleManager<IdentityRole> roleManager)
-        {
-            if (!await roleManager.RoleExistsAsync("Employee"))
-            {
-                await roleManager.CreateAsync(new IdentityRole("Employee"));
-                await roleManager.CreateAsync(new IdentityRole("Guest"));
-            }
+
         }
     }
 }

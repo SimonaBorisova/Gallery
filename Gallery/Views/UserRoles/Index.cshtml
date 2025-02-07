@@ -1,0 +1,34 @@
+﻿@using Gallery.Models.ViewModels	
+@model List<UserRolesViewModel>
+@{
+	ViewData["Title"] = "Index";
+}
+<h1>
+User Roles
+</h1>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Email</th>
+			<th>Roles</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach(UserRolesViewModel userRolesViewModel in Model)
+		{
+			<tr>
+				<td>@userRolesViewModel.Email</td>
+				<td>@string.Join(", ", userRolesViewModel.Roles)</td>
+				<td>
+					<a asp-controller="UserRoles"
+					asp-action="Manage"
+					asp-route-userId="@userRolesViewModel.UserId"
+					class="btn btn-primary">
+					Manage Roles
+					</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

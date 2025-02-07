@@ -28,22 +28,12 @@ namespace Gallery
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 6;
 
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-._@+";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-._@+1234567890";
                 options.User.RequireUniqueEmail = false;
             });
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
-            
-            using (IServiceScope service =app.Services.CreateScope())
-            {
-                IServiceProvider provider = service.ServiceProvider;
-                RoleManager<IdentityRole> roleManager= provider.GetRequiredService<RoleManager<IdentityRole>>();
-                await ContextSeed.SeedRolesAsync(roleManager);
-                UserManager<ApplicationUser> userManager = provider
-                    .GetRequiredService<UserManager<ApplicationUser>>();
-                await ContextSeed.SeedAdminAsync(userManager);  
-            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -66,9 +56,7 @@ namespace Gallery
                 .WithStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();
-
-            GalleryDbInitializer.Seed(app);
-
+           await GalleryDbInitializer.Initialise(app);
             app.Run();
         }
     }
