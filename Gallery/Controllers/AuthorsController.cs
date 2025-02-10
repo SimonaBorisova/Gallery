@@ -3,16 +3,21 @@ using Microsoft.EntityFrameworkCore;
 using Gallery.Data;
 using Gallery.Models;
 using Gallery.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Gallery.Services;
+using NuGet.Protocol.Core.Types;
 
 namespace Gallery.Controllers
 {
     public class AuthorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEnumConvertService _enumConvertService;
 
-        public AuthorsController(ApplicationDbContext context)
+        public AuthorsController(ApplicationDbContext context, IEnumConvertService enumDisplayService)
         {
             _context = context;
+            _enumConvertService = enumDisplayService;
         }
 
         public IActionResult Index(string searched)
@@ -31,6 +36,7 @@ namespace Gallery.Controllers
             return View(authors);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,44 +54,59 @@ namespace Gallery.Controllers
             return View(author);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Employee")]
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "Employee")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( AuthorViewModel authorsViewModel)
+        public async Task<IActionResult> Create(AuthorViewModel authorsViewModel)
         {
-
-            if (ModelState.IsValid)
+            if (authorsViewModel.Portrait != null && authorsViewModel.Portrait.Length > 0)
             {
-                Author author = new Author()
-                {
-                    Name = authorsViewModel.Name,
-                    BirthYear = authorsViewModel.BirthYear,
-                    DeathYear = authorsViewModel.DeathYear,
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(authorsViewModel.Portrait.FileName);
 
-                };
-                string imagePath = "";
-                using (var memoryStream = new MemoryStream())
-                {
-                    authorsViewModel.Portrait.CopyTo(memoryStream);
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
-                    imagePath = $"wwwroot/images/authorsPortraits/{authorsViewModel.Name.ToString()}/{authorsViewModel.Name}.png";
-                    Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
-                    FileStream fileStream = new FileStream(imagePath, FileMode.Create);
-                    authorsViewModel.Portrait.CopyTo(fileStream);
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
                 }
-                author.PortraitUrl = imagePath;
 
-                _context.Authors.Add(author);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await authorsViewModel.Portrait.CopyToAsync(stream);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    Author author = new Author()
+                    {
+                        Name = authorsViewModel.Name,
+                        BirthYear = authorsViewModel.BirthYear,
+                        DeathYear = authorsViewModel.DeathYear,
+                        NationalityId = authorsViewModel.Nationality,
+                        PortraitUrl = fileName
+                    };
+
+                    _context.Authors.Add(author);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
+
             return View(authorsViewModel);
         }
 
+        
+        [HttpGet]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -132,7 +153,8 @@ namespace Gallery.Controllers
             }
             return View(author);
         }
-
+        [Authorize(Roles = "Employee")]
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

@@ -53,7 +53,7 @@
                     @Html.DisplayFor(modelItem => author.NationalityId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => author.PortraitUrl)
+                    <img src="@Url.Content($"~/images/{author.PortraitUrl}")" class="menu-img img-fluid" alt="@author.Name">
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@author.Id">Edit</a> |

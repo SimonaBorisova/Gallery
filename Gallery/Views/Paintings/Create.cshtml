@@ -47,11 +47,12 @@
                     <option value="0">Изберете техника</option>
                 </select>
             </div>
-            <div class="form-group">
+            @* snimka *@
+            @* <div class="form-group">
                 <label asp-for="Picture" class="control-label"></label>
                 <input asp-for="Picture" type="file" class="form-control" />
                 <span asp-validation-for="Picture" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="input-group my-3">
                 <label asp-for="SelectedFloorNumber" class="input-group-text"></label>
                 <select asp-for="SelectedFloorNumber" asp-items="Model.FloorNumbers" class="form-select">

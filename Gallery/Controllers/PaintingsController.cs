@@ -97,20 +97,6 @@ namespace Gallery.Controllers
                     ArtTechniqueId = (ArtTechnique)paintingViewModel.SelectedArtTechnique
                 };
 
-                //string imagePath = "";
-
-                //using (MemoryStream memoryStream = new())
-                //{
-                //    paintingViewModel.Picture.CopyTo(memoryStream);
-
-                //    imagePath = $"wwwroot/images/pictures/{author.Name.ToString()}/{painting.Name}.png";
-                //    Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
-                //    FileStream fileStream = new(imagePath, FileMode.Create);
-                //    paintingViewModel.Picture.CopyTo(fileStream);
-                //}
-
-                //painting.PictureUrl = imagePath;
-
                 _context.Add(painting);
                 await _context.SaveChangesAsync();
 
